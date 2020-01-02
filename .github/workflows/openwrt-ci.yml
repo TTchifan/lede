@@ -5,13 +5,18 @@
 # Copyright (C) 2019 KFERMercer <KFER.Mercer@gmail.com>
 # 
 # <https://github.com/KFERMercer/OpenWrt-CI>
-# 
+#
 
 name: OpenWrt-CI
 
 on:
-  schedule:
-    - cron: 0 20 * * *
+  push:
+    branches: 
+      - master
+   schedule:
+      - cron: 0 20 * * 6
+  # release:
+  #   types: [published]
 
 jobs:
 
@@ -20,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout
         uses: actions/checkout@master
         with:
@@ -37,7 +43,6 @@ jobs:
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
 
-          # 利用挂载在 /mnt/ 的 14G 额外空间:
           # sudo mkdir -p -m 777 /mnt/openwrt/bin /mnt/openwrt/build_dir/host /mnt/openwrt/build_dir/hostpkg /mnt/openwrt/dl /mnt/openwrt/feeds /mnt/openwrt/staging_dir
           # ln -s /mnt/openwrt/bin ./bin
           # mkdir -p ./build_dir/host && ln -s /mnt/openwrt/build_dir/host ./build_dir/host
@@ -54,12 +59,62 @@ jobs:
           ./scripts/feeds install -a
 
       - name: Generate configuration file
-        run: make defconfig
+        run: |
+          rm -f ./.config*
+          touch ./.config
+
+          # 编译P2W固件:
+           cat >> .config <<EOF
+           CONFIG_TARGET_ipq40xx=y
+           CONFIG_TARGET_ipq40xx_DEVICE_p2w_r619ac=y
+           CONFIG_TARGET_BOARD="ipq40xx"
+           # CONFIG_TARGET_x86_64 is not set
+           # CONFIG_TARGET_x86_64_Generic is not set
+           # CONFIG_TARGET_x86_core2 is not set
+           # CONFIG_TARGET_x86_generic is not set
+           # CONFIG_TARGET_x86_geode is not set
+           # CONFIG_TARGET_x86_legacy is not set
+           # CONFIG_TARGET_x86_zen is not set
+           CONFIG_ARIA2_BITTORRENT=y
+           CONFIG_ARIA2_NOXML=y
+           CONFIG_ARIA2_OPENSSL=y
+           CONFIG_ARIA2_WEBSOCKET=y
+           CONFIG_PACKAGE_aria2=y
+           CONFIG_PACKAGE_ariang=y
+           CONFIG_PACKAGE_boost-date_time=y
+           CONFIG_PACKAGE_boost-program_options=y
+           CONFIG_PACKAGE_ipt2socks=y
+           CONFIG_PACKAGE_kcptun-client=y
+           CONFIG_PACKAGE_libcap=y
+           CONFIG_PACKAGE_libwebsockets-full=y
+           CONFIG_PACKAGE_luci-app-aria2=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Kcptun=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Server=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Socks=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan=y
+           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray=y
+           CONFIG_PACKAGE_luci-app-ttyd=y
+           CONFIG_PACKAGE_luci-i18n-aria2-zh-cn=y
+           CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
+           CONFIG_PACKAGE_luci-theme-material=y
+           CONFIG_PACKAGE_shadowsocksr-libev-ssr-local=y
+           CONFIG_PACKAGE_trojan=y
+           CONFIG_PACKAGE_ttyd=y
+           EOF
+
+          # 
+          # ========================固件定制部分结束========================
+          # 
+
+          sed -i 's/^[ \t]*//g' ./.config
+          make defconfig
 
       - name: Make download
         run: |
           make download -j8
-          find dl -size -1024c -exec rm -f {} \;
+          find ./dl/ -size -1024c -exec rm -f {} \;
+          df -h
 
       - name: Compile firmware
         run: |
