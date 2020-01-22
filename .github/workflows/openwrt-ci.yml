@@ -101,26 +101,22 @@ jobs:
           CONFIG_TARGET_ipq40xx=y
           CONFIG_TARGET_ipq40xx_DEVICE_p2w_r619ac-128m=y
           CONFIG_TARGET_BOARD="ipq40xx"
-          # # CONFIG_TARGET_x86_64 is not set
-          # # CONFIG_TARGET_x86_64_Generic is not set
-          # # CONFIG_TARGET_x86_core2 is not set
-          # # CONFIG_TARGET_x86_generic is not set
-          # # CONFIG_TARGET_x86_geode is not set
-          # # CONFIG_TARGET_x86_legacy is not set
-          # # CONFIG_TARGET_x86_zen is not set
           CONFIG_ARIA2_BITTORRENT=y
           CONFIG_ARIA2_NOXML=y
           CONFIG_ARIA2_OPENSSL=y
           CONFIG_ARIA2_WEBSOCKET=y
           CONFIG_PACKAGE_aria2=y
           CONFIG_PACKAGE_ariang=y
+          CONFIG_PACKAGE_baidupcs-web=y
           CONFIG_PACKAGE_boost-date_time=y
           CONFIG_PACKAGE_boost-program_options=y
           CONFIG_PACKAGE_ipt2socks=y
           CONFIG_PACKAGE_kcptun-client=y
+          CONFIG_PACKAGE_kmod-macvlan=y
           CONFIG_PACKAGE_libcap=y
           CONFIG_PACKAGE_libwebsockets-full=y
           CONFIG_PACKAGE_luci-app-aria2=y
+          CONFIG_PACKAGE_luci-app-baidupcs-web=y
           CONFIG_PACKAGE_luci-app-mwan3=y
           CONFIG_PACKAGE_luci-app-netdata=y
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Kcptun=y
@@ -129,6 +125,7 @@ jobs:
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ShadowsocksR_Socks=y
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan=y
           CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_V2ray=y
+          CONFIG_PACKAGE_luci-app-syncdial=y
           CONFIG_PACKAGE_luci-app-ttyd=y
           CONFIG_PACKAGE_luci-i18n-aria2-zh-cn=y
           CONFIG_PACKAGE_luci-i18n-mwan3-zh-cn=y
